@@ -7,5 +7,7 @@ The Screen Capture Monitor application is designed to monitor changes happening 
 Key features of the application:
 
 Monitoring screen changes.
+
 Automatic screen capture upon detecting changes.
+
 Sending screen snapshots for further processing or analysis.
