@@ -3,6 +3,10 @@
     public class Observer
     {
         private bool _autoReset = true;
+        private Bitmap _previousScreenImage;
+        private MainForm _mainForm;
+        private Rectangle _bounds;
+        public Rectangle CapturedArea { get; set; }
         public bool AutoReset
         {
             get
@@ -14,7 +18,6 @@
                 _autoReset = value;
             }
         }
-        private Rectangle _bounds;
         public Rectangle Bounds
         {
             get
@@ -26,12 +29,8 @@
                 _bounds = value;
             }
         }
-        private Bitmap _previousScreenImage;
-        public static System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
-        public static event Action TimerStopped;
-        private MainForm _mainForm;
+
         public delegate void ScreenChangeHandler(Bitmap screenshot);
-        public Rectangle CapturedArea { get; set; }
 
         public event ScreenChangeHandler OnScreenChanges;
 
@@ -83,7 +82,7 @@
                 if (!AutoReset)
                 {
                     _mainForm.Stop();
-                    _mainForm.isStarted = false;
+                    _mainForm.IsStarted = false;
                     Stop();
                 }
                 return;
@@ -129,5 +128,8 @@
 
             return diffBitmap;
         }
+
+        public static System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+        public static event Action TimerStopped;
     }
 }

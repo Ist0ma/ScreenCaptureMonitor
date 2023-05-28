@@ -8,16 +8,17 @@ namespace ScreenCaptureMonitor
 {
     public class MainForm : Form
     {
-        bool isDown = false;
-        public bool isStarted { get; set; } = false;
-        public bool isSettings { get; set; } = false;
-        Point initialMousePosition;
-        public Observer observer;
-        SettingsPanelBuilder panelBuilder;
-        Panel settingsPanel;
-        public NoVisualEffectsButton StartButton;
-        private NoVisualEffectsButton SettingsButton;
-        private readonly int formBorder = 8;
+        private readonly int _formBorder = 8;
+
+        private bool _isDown = false;
+        private Point _initialMousePosition;
+        private Panel _settingsPanel;
+        private SettingsPanelBuilder _panelBuilder;
+        private NoVisualEffectsButton _settingsButton;
+        public bool IsStarted { get; set; } = false;
+        public bool IsSettings { get; set; } = false;
+        public Observer Observer { get; set; }
+        public NoVisualEffectsButton StartButton { get; set; }
 
         public Screen CurrentScreen
         {
@@ -31,41 +32,41 @@ namespace ScreenCaptureMonitor
         {
             InitializeComponent();
 
-            observer = new Observer(this);
-            observer.CapturedArea = Screen.FromHandle(Handle).Bounds;
+            Observer = new Observer(this);
+            Observer.CapturedArea = Screen.FromHandle(Handle).Bounds;
 
             Location = AppSettings.InitialPosition;
             Size = AppSettings.InitialSize;
 
-            panelBuilder = new SettingsPanelBuilder(this, services);
-            settingsPanel = panelBuilder.CreatePanel();
-            settingsPanel.Hide();
-            settingsPanel.Location = new Point(StartButton.Width + 10, 0);
-            Controls.Add(settingsPanel);
+            _panelBuilder = new SettingsPanelBuilder(this, services);
+            _settingsPanel = _panelBuilder.CreatePanel();
+            _settingsPanel.Hide();
+            _settingsPanel.Location = new Point(StartButton.Width + 10, 0);
+            Controls.Add(_settingsPanel);
         }
 
         #region FormMovement
         private void MainForm_MouseDown(object sender, MouseEventArgs e)
         {
-            if (!isSettings && !isStarted)
+            if (!IsSettings && !IsStarted)
             {
-                isDown = true;
-                initialMousePosition = PointToClient(MousePosition);
+                _isDown = true;
+                _initialMousePosition = PointToClient(MousePosition);
             }
         }
 
         private void MainForm_MouseMove(object sender, MouseEventArgs e)
         {
-            if (isDown)
+            if (_isDown)
             {
                 Opacity = 0.2;
-                Location = new Point(MousePosition.X - initialMousePosition.X, MousePosition.Y - initialMousePosition.Y);
+                Location = new Point(MousePosition.X - _initialMousePosition.X, MousePosition.Y - _initialMousePosition.Y);
             }
         }
 
         private void MainForm_MouseUp(object sender, MouseEventArgs e)
         {
-            isDown = false;
+            _isDown = false;
             Opacity = 1;
             AppSettings.InitialPosition = Location;
         }
@@ -85,8 +86,8 @@ namespace ScreenCaptureMonitor
 
         private void StartButton_Click(object sender, EventArgs e)
         {
-            isStarted = !isStarted;
-            if (isStarted)
+            IsStarted = !IsStarted;
+            if (IsStarted)
             {
                 Start();
             }
@@ -98,8 +99,8 @@ namespace ScreenCaptureMonitor
 
         private void SettingsButton_Click(object sender, EventArgs e)
         {
-            isSettings = !isSettings;
-            if (isSettings)
+            IsSettings = !IsSettings;
+            if (IsSettings)
             {
                 SettingsShow();
             }
@@ -126,11 +127,11 @@ namespace ScreenCaptureMonitor
         {
             if (FormBorderStyle == FormBorderStyle.None)
             {
-                MoveControls(new Point(formBorder, formBorder));
+                MoveControls(new Point(_formBorder, _formBorder));
             }
             if (FormBorderStyle == FormBorderStyle.Sizable)
             {
-                MoveControls(new Point(-formBorder, -formBorder));
+                MoveControls(new Point(-_formBorder, -_formBorder));
             }
         }
 
@@ -145,29 +146,29 @@ namespace ScreenCaptureMonitor
         public void Start()
         {
             StartButton.Text = "Stop";
-            observer.Bounds = Bounds;
-            observer.Start();
-            settingsPanel.Visible = false;
+            Observer.Bounds = Bounds;
+            Observer.Start();
+            _settingsPanel.Visible = false;
             TransparencyKey = BackColor;
             FormBorderStyle = FormBorderStyle.None;
-            SettingsButton.Visible = false;
+            _settingsButton.Visible = false;
             SetElements();
         }
         public void Stop()
         {
-            observer.Stop();
+            Observer.Stop();
             StartButton.Text = "Start";
             Opacity = 1;
             TransparencyKey = Color.Wheat;
             FormBorderStyle = FormBorderStyle.Sizable;
-            SettingsButton.Visible = true;
+            _settingsButton.Visible = true;
             SetElements();
         }
 
 
         public void SettingsShow()
         {
-            settingsPanel.Show();
+            _settingsPanel.Show();
 
             StartButton.Enabled = false;
             AutoSize = true;
@@ -179,7 +180,7 @@ namespace ScreenCaptureMonitor
         public void SettingsHide()
         {
             StartButton.Enabled = true;
-            settingsPanel.Hide();
+            _settingsPanel.Hide();
             AutoSize = false;
             Size = AppSettings.InitialSize;
             Location = AppSettings.InitialPosition;
@@ -191,7 +192,7 @@ namespace ScreenCaptureMonitor
         private void InitializeComponent()
         {
             StartButton = new NoVisualEffectsButton();
-            SettingsButton = new NoVisualEffectsButton();
+            _settingsButton = new NoVisualEffectsButton();
             SuspendLayout();
             // 
             // StartButton
@@ -207,21 +208,21 @@ namespace ScreenCaptureMonitor
             // 
             // SettingsButton
             // 
-            SettingsButton.BackgroundImage = Properties.Resources.settings_button;
-            SettingsButton.BackgroundImageLayout = ImageLayout.Stretch;
-            SettingsButton.Cursor = Cursors.Hand;
-            SettingsButton.Location = new Point(0, 36);
-            SettingsButton.Name = "SettingsButton";
-            SettingsButton.Size = new Size(30, 30);
-            SettingsButton.TabIndex = 1;
-            SettingsButton.UseVisualStyleBackColor = true;
-            SettingsButton.Click += SettingsButton_Click;
+            _settingsButton.BackgroundImage = Properties.Resources.settings_button;
+            _settingsButton.BackgroundImageLayout = ImageLayout.Stretch;
+            _settingsButton.Cursor = Cursors.Hand;
+            _settingsButton.Location = new Point(0, 36);
+            _settingsButton.Name = "SettingsButton";
+            _settingsButton.Size = new Size(30, 30);
+            _settingsButton.TabIndex = 1;
+            _settingsButton.UseVisualStyleBackColor = true;
+            _settingsButton.Click += SettingsButton_Click;
             // 
             // MainForm
             // 
             ClientSize = new Size(84, 84);
             ControlBox = false;
-            Controls.Add(SettingsButton);
+            Controls.Add(_settingsButton);
             Controls.Add(StartButton);
             Cursor = Cursors.SizeAll;
             FormBorderStyle = FormBorderStyle.SizableToolWindow;

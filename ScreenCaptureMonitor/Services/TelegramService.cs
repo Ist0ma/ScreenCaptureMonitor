@@ -11,7 +11,6 @@ namespace ScreenCaptureMonitor.Services
         private long _adminId;
 
         public string Name => "Telegram Service";
-
         public List<IServiceSetting> ServiceSettings => new List<IServiceSetting>() { new TelegramServiceKeySetting(this), new TelegramServiceAdminIdSetting(this) };
 
         public string BotKey

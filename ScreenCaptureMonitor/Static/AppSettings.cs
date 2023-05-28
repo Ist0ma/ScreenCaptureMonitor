@@ -1,4 +1,6 @@
 ﻿using System.Collections.Specialized;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace ScreenCaptureMonitor.Static
 {
@@ -71,7 +73,7 @@ namespace ScreenCaptureMonitor.Static
         }
 
         [System.ComponentModel.SettingsBindable(true)]
-        public static Dictionary<string,bool> Services
+        public static Dictionary<string, bool> Services
         {
             get
             {
@@ -79,7 +81,7 @@ namespace ScreenCaptureMonitor.Static
                 Dictionary<string, bool> services = new Dictionary<string, bool>();
                 if (strings != null && strings.Count > 0)
                 {
-                    foreach (String s in strings)
+                    foreach (string s in strings)
                     {
                         string[] serviceProp = s.Split('=');
                         services[serviceProp[0]] = bool.Parse(serviceProp[1]);

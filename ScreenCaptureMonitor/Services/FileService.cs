@@ -9,7 +9,6 @@ namespace ScreenCaptureMonitor.Services
         private string _folderPath;
 
         public string Name => "File Service";
-
         public List<IServiceSetting> ServiceSettings => new List<IServiceSetting>() { new FileServiceFolderSetting(this) };
 
         public FileService()

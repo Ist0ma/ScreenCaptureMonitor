@@ -2,9 +2,9 @@
 {
     public partial class TramsparentScrenshootAreaForm : Form
     {
-        private Point startPoint;
-        private Rectangle selectionRectangle;
-        private bool isMouseDown;
+        private Point _startPoint;
+        private Rectangle _selectionRectangle;
+        private bool _isMouseDown;
 
         private MainForm _mainForm;
         public TramsparentScrenshootAreaForm(MainForm mainForm)
@@ -29,20 +29,20 @@
         {
             if (e.Button == MouseButtons.Left)
             {
-                startPoint = e.Location;
-                isMouseDown = true;
+                _startPoint = e.Location;
+                _isMouseDown = true;
             }
         }
 
         private void MainForm_MouseMove(object sender, MouseEventArgs e)
         {
-            if (isMouseDown)
+            if (_isMouseDown)
             {
-                int x = Math.Min(startPoint.X, e.X);
-                int y = Math.Min(startPoint.Y, e.Y);
-                int width = Math.Abs(startPoint.X - e.X);
-                int height = Math.Abs(startPoint.Y - e.Y);
-                selectionRectangle = new Rectangle(x, y, width, height);
+                int x = Math.Min(_startPoint.X, e.X);
+                int y = Math.Min(_startPoint.Y, e.Y);
+                int width = Math.Abs(_startPoint.X - e.X);
+                int height = Math.Abs(_startPoint.Y - e.Y);
+                _selectionRectangle = new Rectangle(x, y, width, height);
 
                 Invalidate();
             }
@@ -50,13 +50,13 @@
 
         private void MainForm_MouseUp(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && isMouseDown)
+            if (e.Button == MouseButtons.Left && _isMouseDown)
             {
-                isMouseDown = false;
+                _isMouseDown = false;
 
-                _mainForm.observer.CapturedArea = RectangleToScreen(selectionRectangle);
+                _mainForm.Observer.CapturedArea = RectangleToScreen(_selectionRectangle);
 
-                selectionRectangle = Rectangle.Empty;
+                _selectionRectangle = Rectangle.Empty;
 
                 Hide();
             }
@@ -66,9 +66,9 @@
         {
             base.OnPaint(e);
 
-            if (isMouseDown)
+            if (_isMouseDown)
             {
-                e.Graphics.DrawRectangle(Pens.Red, selectionRectangle);
+                e.Graphics.DrawRectangle(Pens.Red, _selectionRectangle);
             }
         }
     }

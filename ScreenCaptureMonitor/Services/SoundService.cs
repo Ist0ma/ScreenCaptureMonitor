@@ -48,7 +48,7 @@ namespace ScreenCaptureMonitor.Services
             {
                 string selectedFilePath = openFileDialog.FileName;
                 AppSettings.SoundFilePath = selectedFilePath;
-                _soundFilePath = selectedFilePath;
+                _player = new SoundPlayer(selectedFilePath);
             }
             else
             {
