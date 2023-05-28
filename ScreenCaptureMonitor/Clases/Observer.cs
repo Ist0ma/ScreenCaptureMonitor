@@ -86,6 +86,7 @@
                     _mainForm.isStarted = false;
                     Stop();
                 }
+                return;
             }
 
             _previousScreenImage = currentScreenImage;

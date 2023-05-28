@@ -94,5 +94,16 @@ namespace ScreenCaptureMonitor.Properties {
                 this["InitialSize"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection Services {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["Services"]));
+            }
+            set {
+                this["Services"] = value;
+            }
+        }
     }
 }

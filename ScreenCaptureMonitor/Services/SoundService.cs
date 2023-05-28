@@ -17,16 +17,15 @@ namespace ScreenCaptureMonitor.Services
 
         public SoundService()
         {
-            _player = new SoundPlayer();
 
             if (string.IsNullOrEmpty(AppSettings.SoundFilePath) || !File.Exists(AppSettings.SoundFilePath))
             {
-                ChooseNewFile();
+                _player = new SoundPlayer(Properties.Resources.Sound_05952);
+                AppSettings.SoundFilePath = "Default";
             }
-            _soundFilePath = AppSettings.SoundFilePath;
-            if (File.Exists(_soundFilePath))
+            else
             {
-                _player = new SoundPlayer(_soundFilePath);
+                _player = new SoundPlayer(AppSettings.SoundFilePath);
             }
             Observer.TimerStopped += OnTimerStopped;
         }

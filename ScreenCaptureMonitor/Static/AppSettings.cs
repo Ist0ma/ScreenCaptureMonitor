@@ -1,4 +1,6 @@
-﻿namespace ScreenCaptureMonitor.Static
+﻿using System.Collections.Specialized;
+
+namespace ScreenCaptureMonitor.Static
 {
     public static class AppSettings
     {
@@ -68,9 +70,33 @@
             }
         }
 
-        public static void LoadSettings()
+        [System.ComponentModel.SettingsBindable(true)]
+        public static Dictionary<string,bool> Services
         {
-            Properties.Settings.Default.Reload();
+            get
+            {
+                StringCollection strings = Properties.Settings.Default.Services;
+                Dictionary<string, bool> services = new Dictionary<string, bool>();
+                if (strings != null && strings.Count > 0)
+                {
+                    foreach (String s in strings)
+                    {
+                        string[] serviceProp = s.Split('=');
+                        services[serviceProp[0]] = bool.Parse(serviceProp[1]);
+                    }
+                }
+                return services;
+            }
+            set
+            {
+                StringCollection strings = new StringCollection();
+                foreach (var item in value)
+                {
+                    strings.Add($"{item.Key}={item.Value}");
+                }
+                Properties.Settings.Default.Services = strings;
+                SaveSettings();
+            }
         }
 
         private static void SaveSettings()

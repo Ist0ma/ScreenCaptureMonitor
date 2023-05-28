@@ -1,5 +1,6 @@
 ﻿using ScreenCaptureMonitor.AdditionalForms;
 using ScreenCaptureMonitor.Interfaces;
+using ScreenCaptureMonitor.Static;
 
 namespace ScreenCaptureMonitor.Builders
 {
@@ -11,12 +12,15 @@ namespace ScreenCaptureMonitor.Builders
 
         private List<IService> _services;
 
+        private Dictionary<string, bool> defaultServices;
+
         private readonly int rowHeight = 25;
         public SettingsPanelBuilder(MainForm mainForm, List<IService> services)
         {
             _services = services;
             this.mainForm = mainForm;
             areaForm = new TramsparentScrenshootAreaForm(mainForm);
+            defaultServices = AppSettings.Services;
         }
 
         public Panel CreatePanel()
@@ -31,14 +35,27 @@ namespace ScreenCaptureMonitor.Builders
                 checkBox.Location = new Point(0, height);
                 checkBox.TabIndex = 1;
                 checkBox.Text = service.Name;
+                if (AppSettings.Services.ContainsKey(service.Name))
+                {
+                    checkBox.Checked = AppSettings.Services[service.Name];
+                    mainForm.observer.OnScreenChanges += service.Execute;
+                }
+                else
+                {
+                    checkBox.Checked = false;
+                }
                 checkBox.CheckedChanged += (sender, e) =>
                 {
                     if (checkBox.Checked)
                     {
+                        defaultServices[service.Name] = true;
+                        AppSettings.Services = defaultServices;
                         mainForm.observer.OnScreenChanges += service.Execute;
                     }
                     else
                     {
+                        defaultServices[service.Name] = false;
+                        AppSettings.Services = defaultServices;
                         mainForm.observer.OnScreenChanges -= service.Execute;
                     }
                 };

@@ -16,7 +16,16 @@ namespace ScreenCaptureMonitor.Services
         {
             if (string.IsNullOrEmpty(AppSettings.DefaultImgFolder) || !Directory.Exists(AppSettings.DefaultImgFolder))
             {
-                ChooseNewFolder();
+                try
+                {
+                    string rootPath = Directory.GetCurrentDirectory();
+                    var dir = Directory.CreateDirectory(rootPath + "\\Screenshots");
+                    AppSettings.DefaultImgFolder = dir.FullName;
+                }
+                catch (Exception e)
+                {
+                    ChooseNewFolder();
+                }
             }
             _folderPath = AppSettings.DefaultImgFolder;
         }

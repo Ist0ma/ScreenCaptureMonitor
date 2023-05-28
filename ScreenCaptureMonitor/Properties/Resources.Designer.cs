@@ -69,5 +69,14 @@ namespace ScreenCaptureMonitor.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        public static System.IO.UnmanagedMemoryStream Sound_05952 {
+            get {
+                return ResourceManager.GetStream("Sound_05952", resourceCulture);
+            }
+        }
     }
 }
