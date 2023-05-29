@@ -6,25 +6,26 @@ namespace ScreenCaptureMonitor.Builders
 {
     public class SettingsPanelBuilder
     {
-        private readonly int rowHeight = 25;
+        Panel panel;
+        MainForm mainForm;
+        TramsparentScrenshootAreaForm areaForm;
 
-        private Panel _panel;
-        private MainForm _mainForm;
         private List<IService> _services;
-        private Dictionary<string, bool> _defaultServices;
-        private TramsparentScrenshootAreaForm _areaForm;
 
+        private Dictionary<string, bool> defaultServices;
+
+        private readonly int rowHeight = 25;
         public SettingsPanelBuilder(MainForm mainForm, List<IService> services)
         {
             _services = services;
-            _mainForm = mainForm;
-            _areaForm = new TramsparentScrenshootAreaForm(mainForm);
-            _defaultServices = AppSettings.Services;
+            this.mainForm = mainForm;
+            areaForm = new TramsparentScrenshootAreaForm(mainForm);
+            defaultServices = AppSettings.Services;
         }
 
         public Panel CreatePanel()
         {
-            _panel = new Panel();
+            panel = new Panel();
             int height = 0;
             int maxWidth = 0;
             foreach (IService service in _services)
@@ -37,7 +38,7 @@ namespace ScreenCaptureMonitor.Builders
                 if (AppSettings.Services.ContainsKey(service.Name))
                 {
                     checkBox.Checked = AppSettings.Services[service.Name];
-                    _mainForm.Observer.OnScreenChanges += service.Execute;
+                    mainForm.Observer.OnScreenChanges += service.Execute;
                 }
                 else
                 {
@@ -47,20 +48,20 @@ namespace ScreenCaptureMonitor.Builders
                 {
                     if (checkBox.Checked)
                     {
-                        _defaultServices[service.Name] = true;
-                        AppSettings.Services = _defaultServices;
-                        _mainForm.Observer.OnScreenChanges += service.Execute;
+                        defaultServices[service.Name] = true;
+                        AppSettings.Services = defaultServices;
+                        mainForm.Observer.OnScreenChanges += service.Execute;
                     }
                     else
                     {
-                        _defaultServices[service.Name] = false;
-                        AppSettings.Services = _defaultServices;
-                        _mainForm.Observer.OnScreenChanges -= service.Execute;
+                        defaultServices[service.Name] = false;
+                        AppSettings.Services = defaultServices;
+                        mainForm.Observer.OnScreenChanges -= service.Execute;
                     }
                 };
                 height += 20;
 
-                _panel.Controls.Add(checkBox);
+                panel.Controls.Add(checkBox);
 
                 foreach (IServiceSetting setting in service.ServiceSettings)
                 {
@@ -77,15 +78,15 @@ namespace ScreenCaptureMonitor.Builders
                         button.Click += setting.Action;
                         button.Click += (sender, e) =>
                         {
-                            if (_mainForm.IsSettings)
+                            if (mainForm.IsSettings)
                             {
-                                _mainForm.IsSettings = false;
-                                _mainForm.SettingsHide();
+                                mainForm.IsSettings = false;
+                                mainForm.SettingsHide();
 
                             }
                         };
 
-                        _panel.Controls.Add(button);
+                        panel.Controls.Add(button);
 
                         leftOffset = button.Location.X + button.Size.Width;
                     }
@@ -101,7 +102,7 @@ namespace ScreenCaptureMonitor.Builders
                         settingCheckBox.UseVisualStyleBackColor = true;
                         settingCheckBox.CheckedChanged += setting.Action;
 
-                        _panel.Controls.Add(settingCheckBox);
+                        panel.Controls.Add(settingCheckBox);
 
                         leftOffset = settingCheckBox.Location.X + settingCheckBox.Size.Width;
                     }
@@ -116,7 +117,7 @@ namespace ScreenCaptureMonitor.Builders
                         textBox.Text = setting.Name;
                         textBox.TextChanged += setting.Action;
 
-                        _panel.Controls.Add(textBox);
+                        panel.Controls.Add(textBox);
 
                         leftOffset = textBox.Location.X + textBox.Size.Width;
                     }
@@ -128,7 +129,7 @@ namespace ScreenCaptureMonitor.Builders
                     description.Text = setting.Description;
                     description.AutoSize = true;
 
-                    _panel.Controls.Add(description);
+                    panel.Controls.Add(description);
 
                     leftOffset += description.Width;
 
@@ -141,7 +142,7 @@ namespace ScreenCaptureMonitor.Builders
                     additional.ForeColor = Color.FromArgb(100, 100, 100);
                     additional.AutoSize = true;
 
-                    _panel.Controls.Add(additional);
+                    panel.Controls.Add(additional);
 
                     leftOffset += additional.Width;
                     if (maxWidth < leftOffset)
@@ -152,7 +153,7 @@ namespace ScreenCaptureMonitor.Builders
                     height += 35;
                 }
 
-                _panel.Controls.Add(CreateLine(new Point(0, height)));
+                panel.Controls.Add(CreateLine(new Point(0, height)));
 
                 height += 5;
             }
@@ -166,11 +167,11 @@ namespace ScreenCaptureMonitor.Builders
             {
                 if (useMonitorButton.Checked)
                 {
-                    _mainForm.Observer.CapturedArea = Screen.FromHandle(_mainForm.Handle).Bounds;
+                    mainForm.Observer.CapturedArea = Screen.FromHandle(mainForm.Handle).Bounds;
                 }
             };
 
-            _panel.Controls.Add(useMonitorButton);
+            panel.Controls.Add(useMonitorButton);
 
             height += rowHeight;
 
@@ -182,12 +183,12 @@ namespace ScreenCaptureMonitor.Builders
             {
                 if (useSpecialAreaButton.Checked)
                 {
-                    _areaForm.Show();
-                    _areaForm.Bounds = Screen.FromControl(_mainForm).Bounds;
+                    areaForm.Show();
+                    areaForm.Bounds = Screen.FromControl(mainForm).Bounds;
                 }
             };
 
-            _panel.Controls.Add(useSpecialAreaButton);
+            panel.Controls.Add(useSpecialAreaButton);
 
             height += rowHeight;
 
@@ -205,18 +206,18 @@ namespace ScreenCaptureMonitor.Builders
             {
                 if (AutoResetCheckBox.Checked)
                 {
-                    _mainForm.Observer.AutoReset = true;
+                    mainForm.Observer.AutoReset = true;
                 }
                 else
                 {
-                    _mainForm.Observer.AutoReset = false;
+                    mainForm.Observer.AutoReset = false;
                 }
             };
 
-            _panel.Controls.Add(AutoResetCheckBox);
+            panel.Controls.Add(AutoResetCheckBox);
 
 
-            foreach (Control control in _panel.Controls)
+            foreach (Control control in panel.Controls)
             {
                 if (control is Label && control.Name.StartsWith("line"))
                 {
@@ -224,10 +225,10 @@ namespace ScreenCaptureMonitor.Builders
                 }
             }
 
-            _panel.AutoSize = true;
-            _panel.Cursor = Cursors.Default;
+            panel.AutoSize = true;
+            panel.Cursor = Cursors.Default;
 
-            return _panel;
+            return panel;
         }
 
         private Label CreateLine(Point location)

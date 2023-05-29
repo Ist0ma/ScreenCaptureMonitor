@@ -55,5 +55,15 @@ namespace ScreenCaptureMonitor.Services
                 ChooseNewFolder();
             }
         }
+
+        public bool ValidateService()
+        {
+            if (string.IsNullOrEmpty(_folderPath))
+            {
+                MessageBox.Show("Invalid folder to save screenshots");
+                return false;
+            }
+            return true;
+        }
     }
 }

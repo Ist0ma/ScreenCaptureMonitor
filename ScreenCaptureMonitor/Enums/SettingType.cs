@@ -4,6 +4,7 @@
     {
         Check = 0,
         Button = 1,
-        Text = 2
+        Text = 2,
+        Number = 3
     }
 }

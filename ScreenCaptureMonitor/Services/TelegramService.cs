@@ -50,5 +50,14 @@ namespace ScreenCaptureMonitor.Services
         {
             MessageBox.Show("Enter bot parameters in telegram service properties");
         }
+        public bool ValidateService()
+        {
+            if (string.IsNullOrEmpty(_botKey) || AdminId == 0)
+            {
+                MessageBox.Show("Invalid bot parameters");
+                return false;
+            }
+            return true;
+        }
     }
 }

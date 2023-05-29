@@ -8,17 +8,16 @@ namespace ScreenCaptureMonitor
 {
     public class MainForm : Form
     {
-        private readonly int _formBorder = 8;
-
-        private bool _isDown = false;
-        private Point _initialMousePosition;
-        private Panel _settingsPanel;
-        private SettingsPanelBuilder _panelBuilder;
-        private NoVisualEffectsButton _settingsButton;
         public bool IsStarted { get; set; } = false;
         public bool IsSettings { get; set; } = false;
         public Observer Observer { get; set; }
-        public NoVisualEffectsButton StartButton { get; set; }
+        private bool _isDown = false;
+        Point initialMousePosition;
+        SettingsPanelBuilder panelBuilder;
+        Panel settingsPanel;
+        public NoVisualEffectsButton StartButton;
+        private NoVisualEffectsButton SettingsButton;
+        private readonly int formBorder = 8;
 
         public Screen CurrentScreen
         {
@@ -38,11 +37,11 @@ namespace ScreenCaptureMonitor
             Location = AppSettings.InitialPosition;
             Size = AppSettings.InitialSize;
 
-            _panelBuilder = new SettingsPanelBuilder(this, services);
-            _settingsPanel = _panelBuilder.CreatePanel();
-            _settingsPanel.Hide();
-            _settingsPanel.Location = new Point(StartButton.Width + 10, 0);
-            Controls.Add(_settingsPanel);
+            panelBuilder = new SettingsPanelBuilder(this, services);
+            settingsPanel = panelBuilder.CreatePanel();
+            settingsPanel.Hide();
+            settingsPanel.Location = new Point(StartButton.Width + 10, 0);
+            Controls.Add(settingsPanel);
         }
 
         #region FormMovement
@@ -51,7 +50,7 @@ namespace ScreenCaptureMonitor
             if (!IsSettings && !IsStarted)
             {
                 _isDown = true;
-                _initialMousePosition = PointToClient(MousePosition);
+                initialMousePosition = PointToClient(MousePosition);
             }
         }
 
@@ -60,7 +59,7 @@ namespace ScreenCaptureMonitor
             if (_isDown)
             {
                 Opacity = 0.2;
-                Location = new Point(MousePosition.X - _initialMousePosition.X, MousePosition.Y - _initialMousePosition.Y);
+                Location = new Point(MousePosition.X - initialMousePosition.X, MousePosition.Y - initialMousePosition.Y);
             }
         }
 
@@ -127,11 +126,11 @@ namespace ScreenCaptureMonitor
         {
             if (FormBorderStyle == FormBorderStyle.None)
             {
-                MoveControls(new Point(_formBorder, _formBorder));
+                MoveControls(new Point(formBorder, formBorder));
             }
             if (FormBorderStyle == FormBorderStyle.Sizable)
             {
-                MoveControls(new Point(-_formBorder, -_formBorder));
+                MoveControls(new Point(-formBorder, -formBorder));
             }
         }
 
@@ -148,10 +147,10 @@ namespace ScreenCaptureMonitor
             StartButton.Text = "Stop";
             Observer.Bounds = Bounds;
             Observer.Start();
-            _settingsPanel.Visible = false;
+            settingsPanel.Visible = false;
             TransparencyKey = BackColor;
             FormBorderStyle = FormBorderStyle.None;
-            _settingsButton.Visible = false;
+            SettingsButton.Visible = false;
             SetElements();
         }
         public void Stop()
@@ -161,14 +160,14 @@ namespace ScreenCaptureMonitor
             Opacity = 1;
             TransparencyKey = Color.Wheat;
             FormBorderStyle = FormBorderStyle.Sizable;
-            _settingsButton.Visible = true;
+            SettingsButton.Visible = true;
             SetElements();
         }
 
 
         public void SettingsShow()
         {
-            _settingsPanel.Show();
+            settingsPanel.Show();
 
             StartButton.Enabled = false;
             AutoSize = true;
@@ -180,7 +179,7 @@ namespace ScreenCaptureMonitor
         public void SettingsHide()
         {
             StartButton.Enabled = true;
-            _settingsPanel.Hide();
+            settingsPanel.Hide();
             AutoSize = false;
             Size = AppSettings.InitialSize;
             Location = AppSettings.InitialPosition;
@@ -192,7 +191,7 @@ namespace ScreenCaptureMonitor
         private void InitializeComponent()
         {
             StartButton = new NoVisualEffectsButton();
-            _settingsButton = new NoVisualEffectsButton();
+            SettingsButton = new NoVisualEffectsButton();
             SuspendLayout();
             // 
             // StartButton
@@ -208,21 +207,21 @@ namespace ScreenCaptureMonitor
             // 
             // SettingsButton
             // 
-            _settingsButton.BackgroundImage = Properties.Resources.settings_button;
-            _settingsButton.BackgroundImageLayout = ImageLayout.Stretch;
-            _settingsButton.Cursor = Cursors.Hand;
-            _settingsButton.Location = new Point(0, 36);
-            _settingsButton.Name = "SettingsButton";
-            _settingsButton.Size = new Size(30, 30);
-            _settingsButton.TabIndex = 1;
-            _settingsButton.UseVisualStyleBackColor = true;
-            _settingsButton.Click += SettingsButton_Click;
+            SettingsButton.BackgroundImage = Properties.Resources.settings_button;
+            SettingsButton.BackgroundImageLayout = ImageLayout.Stretch;
+            SettingsButton.Cursor = Cursors.Hand;
+            SettingsButton.Location = new Point(0, 36);
+            SettingsButton.Name = "SettingsButton";
+            SettingsButton.Size = new Size(30, 30);
+            SettingsButton.TabIndex = 1;
+            SettingsButton.UseVisualStyleBackColor = true;
+            SettingsButton.Click += SettingsButton_Click;
             // 
             // MainForm
             // 
             ClientSize = new Size(84, 84);
             ControlBox = false;
-            Controls.Add(_settingsButton);
+            Controls.Add(SettingsButton);
             Controls.Add(StartButton);
             Cursor = Cursors.SizeAll;
             FormBorderStyle = FormBorderStyle.SizableToolWindow;

@@ -5,5 +5,6 @@
         string Name { get; }
         List<IServiceSetting> ServiceSettings { get; }
         void Execute(Bitmap screenshot);
+        bool ValidateService();
     }
 }

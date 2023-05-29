@@ -9,7 +9,6 @@ namespace ScreenCaptureMonitor.Services
     public class SoundService : IService
     {
         private SoundPlayer _player;
-        private string _soundFilePath;
 
         public string Name => "Sound Service";
 
@@ -54,6 +53,16 @@ namespace ScreenCaptureMonitor.Services
             {
                 ChooseNewFile();
             }
+        }
+
+        public bool ValidateService()
+        {
+            if (_player != null && string.IsNullOrEmpty(_player.SoundLocation))
+            {
+                MessageBox.Show("Something wrong with sound player");
+                return false;
+            }
+            return true;
         }
     }
 }

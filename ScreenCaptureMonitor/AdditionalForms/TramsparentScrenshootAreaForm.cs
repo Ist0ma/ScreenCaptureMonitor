@@ -2,9 +2,9 @@
 {
     public partial class TramsparentScrenshootAreaForm : Form
     {
-        private Point _startPoint;
-        private Rectangle _selectionRectangle;
         private bool _isMouseDown;
+        private Point _startPoint;
+        public Rectangle _selectionRectangle;
 
         private MainForm _mainForm;
         public TramsparentScrenshootAreaForm(MainForm mainForm)
@@ -50,7 +50,7 @@
 
         private void MainForm_MouseUp(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && _isMouseDown)
+            if (e.Button == MouseButtons.Left && _isMouseDown && _selectionRectangle.Size != Size.Empty)
             {
                 _isMouseDown = false;
 

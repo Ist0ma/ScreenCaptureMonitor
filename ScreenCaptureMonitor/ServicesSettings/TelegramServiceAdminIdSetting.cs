@@ -17,7 +17,7 @@ namespace ScreenCaptureMonitor.Services
 
         public string Description => "Enter chat ID";
 
-        public SettingType Type => SettingType.Text;
+        public SettingType Type => SettingType.Number;
 
         public string AdditionalInfo => null;
 
